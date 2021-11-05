@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState, FC } from "react";
+import axios from "axios";
+import ListCategory from "./components/ListCategory";
+import "./App.css";
+
+export interface IState {
+  mealcategory: {
+    idCategory: string;
+    strCategory: string;
+    strCategoryThumb: string;
+    strCategoryDescription: string;
+  }[];
+}
 
 function App() {
+  const [mealcat, setMealcat] = useState<IState["mealcategory"]>([
+    {
+      idCategory: "",
+      strCategory: "",
+      strCategoryThumb: "",
+      strCategoryDescription: "",
+    },
+  ]);
+
+  useEffect(() => {
+    const getCategory = async () => {
+      try {
+        const { data } = await axios.get(
+          "https://www.themealdb.com/api/json/v1/1/categories.php"
+        );
+        setMealcat(data.categories);
+        console.log(data.categories);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getCategory();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      Hello world
+      <div>
+        <ListCategory mealcategory={mealcat} />
+      </div>
     </div>
   );
 }
 
 export default App;
+
